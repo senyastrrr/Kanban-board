@@ -5,7 +5,6 @@ export default function TaskCard({ task }) {
   const [user, setUser] = useState([]);
 
   useEffect(() => {
-
     const getUser = async () => {
         const userResponse = await ApiService.get(`/users_tasks/get-user-id-by-task-id/${task.id}`);
         const user = await ApiService.get(`/user/${userResponse.id}`);

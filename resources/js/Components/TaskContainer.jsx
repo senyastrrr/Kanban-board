@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../services/ApiService';
 import TaskCard from './TaskCard';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function TaskContainer({ status }) {
+
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
         const fetchTasksByStatus = async () => {
-
-            const statusIdResponse = await ApiService.get(`statuses/get-id-by-name/${status}`);
-            const tasksByStatusId = await ApiService.get(`tasks/get-by-status/${statusIdResponse.id}`);
-            setTasks(tasksByStatusId);
-
+            try {
+                const statusIdResponse = await ApiService.get(`statuses/get-id-by-name/${status}`);
+                const tasksByStatusId = await ApiService.get(`tasks/get-by-status/${statusIdResponse.id}`);
+                setTasks(tasksByStatusId);
+            } catch (error) {
+                console.error('Ошибка получения задач:', error);
+            }
         };
 
         fetchTasksByStatus();
@@ -28,11 +32,29 @@ export default function TaskContainer({ status }) {
                     </svg>
                 </button>
             </div>
-            <div className="flex flex-col pb-2 overflow-auto drop-container">
-                {tasks.map((curr) => (
-                    <TaskCard task={curr}/>
-                ))}
-            </div>
+            <Droppable droppableId={status}>
+                {(provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                    >
+                        {tasks.map((task, index) => (
+                            <Draggable key={task.id} draggableId={String(task.id)} index={index}>
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                    >
+                                        <TaskCard task={task} />
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
         </div>
     );
 }
