@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../services/ApiService';
 import TaskCard from './TaskCard';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
-export default function TaskContainer({ status }) {
-
-    const [tasks, setTasks] = useState([]);
-
-    useEffect(() => {
-        const fetchTasksByStatus = async () => {
-            try {
-                const statusIdResponse = await ApiService.get(`statuses/get-id-by-name/${status}`);
-                const tasksByStatusId = await ApiService.get(`tasks/get-by-status/${statusIdResponse.id}`);
-                setTasks(tasksByStatusId);
-            } catch (error) {
-                console.error('Ошибка получения задач:', error);
-            }
-        };
-
-        fetchTasksByStatus();
-    }, [status]);
-
+export default function TaskContainer({ statusId, status, tasks }) {
     return (
         <div className="flex flex-col flex-shrink-0 w-72">
             <div className="flex items-center flex-shrink-0 h-10 px-2">
@@ -32,21 +14,21 @@ export default function TaskContainer({ status }) {
                     </svg>
                 </button>
             </div>
-            <Droppable droppableId={status}>
+            <Droppable droppableId={statusId}>
                 {(provided) => (
                     <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
                         {tasks.map((task, index) => (
-                            <Draggable key={task.id} draggableId={String(task.id)} index={index}>
+                            <Draggable draggableId={`${task.id}`} index={index} key={`${task.id}`}>
                                 {(provided) => (
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                     >
-                                        <TaskCard task={task} />
+                                        <TaskCard task={task}/>
                                     </div>
                                 )}
                             </Draggable>

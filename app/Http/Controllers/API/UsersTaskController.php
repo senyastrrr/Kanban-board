@@ -41,12 +41,13 @@ class UsersTaskController extends Controller
 
     public function getUserIdByTaskId($id)
     {
-        $userTask = UsersTask::where('task_id', $id)->first();
-        
-        if ($userTask) {
-            return response()->json(['id' => $userTask->user_id]);
-        } else {
-            return response()->json(['message' => 'Status not found'], 404);
-        }
+        $result = cache()->remember(`user_tasks_`.$id, now()->addMinutes(10), function() use ($id){
+            $userTask = UsersTask::where('task_id', $id)->first();
+            if ($userTask) 
+                return response()->json(['id' => $userTask->user_id]);
+            else
+                return null;
+        });
+        return $result;
     }
 }

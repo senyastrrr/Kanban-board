@@ -11,8 +11,10 @@ class StatusController extends Controller
 {
     public function index()
     {
-        $statuses = Status::all();
-        return response()->json($statuses);
+        $result = cache()->remember('statuses', now()->addMinutes(10), function(){
+            return response()->json(Status::all());
+        });
+        return $result;
     }
 
     public function store(Request $request)
@@ -40,12 +42,13 @@ class StatusController extends Controller
 
     public function getStatusIdByName($name)
     {
-        $status = Status::where('name', $name)->first();
-        
-        if ($status) {
-            return response()->json(['id' => $status->id]);
-        } else {
-            return response()->json(['message' => 'Status not found'], 404);
-        }
+        $result = cache()->remember(`statuses_`.$name, now()->addMinutes(10), function() use ($name){
+            $status = Status::where('name', $name)->first();
+            if ($status) 
+                return response()->json(['id' => $status->id]);
+            else
+                return null;
+        });
+        return $result;
     }
 }

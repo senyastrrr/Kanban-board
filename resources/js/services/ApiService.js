@@ -10,6 +10,16 @@ class ApiService {
         'Content-Type': 'application/json',
       },
     });
+    this.api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (error.response && error.response.status === 429) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return this.api.request(error.config);
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   async get(endpoint) {
