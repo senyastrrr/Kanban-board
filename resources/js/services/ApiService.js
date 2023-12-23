@@ -34,6 +34,7 @@ class ApiService {
 
   async post(endpoint, data) {
     try {
+      console.log(data);
       const response = await this.api.post(endpoint, data);
       return response.data;
     } catch (error) {
