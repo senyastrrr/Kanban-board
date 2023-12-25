@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             'start_date' => now()->subDays(2),
             'end_date' => now()->addDays(10),
             'status_id' => 1,
+            'user_id' => 1,
         ]);
 
         Task::create([
@@ -54,11 +55,7 @@ class DatabaseSeeder extends Seeder
             'start_date' => now()->subDays(1),
             'end_date' => now()->addDays(5),
             'status_id' => 2,
+            'user_id' => 2,
         ]);
-
-        // Создание связей пользователей с задачами
-        UsersTask::create(['user_id' => 1, 'task_id' => 1]);
-        UsersTask::create(['user_id' => 2, 'task_id' => 2]);
-    
     }
 }

@@ -1,17 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import ApiService from '../services/ApiService';
 
-export default function TaskCard({ task, userId }) {
-  const [user, setUser] = useState([]);
-
-  useEffect(() => {
-    const getUser = async () => {
-        const user = await ApiService.get(`/user/${userId}`);
-        setUser(user);
-    };
-
-    getUser();
-}, []);
+export default function TaskCard({ task, user }) {
 
 const handleDelete = async () => {
   try {

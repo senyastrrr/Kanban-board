@@ -3,35 +3,15 @@ import TaskCard from './TaskCard';
 import CreateTaskForm from './CreateTaskForm';
 import EditTaskForm from './EditTaskForm';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import ApiService from '@/services/ApiService';
 import { usePage } from '@inertiajs/react';
 
-export default function TaskContainer({ statusId, status, tasks }) {
+export default function TaskContainer({ statusId, status, tasks, users }) {
 
     const [editForm, setEditForm] = useState(false);
     const [createForm, setCreateForm] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    const [usersTasks, setUsersTasks] = useState([]);
     
     const user = usePage().props.auth.user;
-
-    useEffect(() => {
-        async function fetchUsersTasks() {
-          try {
-            const response = await ApiService.get('/users_tasks');
-            setUsersTasks(response); 
-          } catch (error) {
-            console.error('Ошибка при получении users_tasks:', error);
-          }
-        }
-    
-        fetchUsersTasks();
-      }, []);
-
-      const combinedTasks = tasks.map(task => {
-        const userTask = usersTasks.find(userTask => userTask.task_id === task.id);
-        return { ...task, userId: userTask?.user_id || null };
-      });
 
     return (
         <div className="flex flex-col flex-shrink-0 w-72">
@@ -82,8 +62,9 @@ export default function TaskContainer({ statusId, status, tasks }) {
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
-                        {combinedTasks.map((task, index) => {
-                            let isOwner = user.role === 'admin' || user.id === task.userId;
+                        {tasks.map((task, index) => {
+                            let isOwner = user.role === 'admin' || user.id === task.user_id;
+                            console.log(users);
                             return (
                                 <Draggable
                                     draggableId={`${task.id}`}
@@ -97,7 +78,7 @@ export default function TaskContainer({ statusId, status, tasks }) {
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                         >
-                                            <TaskCard task={task} userId={task.userId}/>
+                                            <TaskCard task={task} user={users.find(user => user.id === task.user_id)}/>
                                         </div>
                                     )}
                                 </Draggable>

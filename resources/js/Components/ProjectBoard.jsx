@@ -6,13 +6,14 @@ import { DragDropContext } from 'react-beautiful-dnd';
 export default function ProjectBoard() {
     const [columns, setColumns] = useState({});
     const [tasks, setTasks] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const statusesResponse = await ApiService.get('/statuses');
                 const tasksResponse = await ApiService.get('/tasks');
-
+                const usersResponse = await ApiService.get('/users');
                 const newColumns = {};
 
                 statusesResponse.forEach((status) => {
@@ -32,6 +33,7 @@ export default function ProjectBoard() {
 
                 setColumns(newColumns);
                 setTasks(tasksResponse);
+                setUsers(usersResponse);
             } catch (error) {
                 console.error('Ошибка получения данных:', error);
             }
@@ -116,6 +118,7 @@ export default function ProjectBoard() {
                                 key={column.id}
                                 status={column.title}
                                 tasks={updatedTasks}
+                                users={users}
                             />
                         );
                     })}

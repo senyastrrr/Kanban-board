@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('task');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
+
             $table->unsignedBigInteger('status_id')->default(1);
             $table->foreign('status_id')->references('id')->on('statuses');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
