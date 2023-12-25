@@ -33,21 +33,27 @@ class UsersTaskController extends Controller
 
     public function destroy($id)
     {
-        $userTask = UsersTask::findOrFail($id);
-        $userTask->delete();
+        $userTask = UsersTask::where('task_id', $id)->first();
 
-        return 204;
+        if ($userTask) {
+            $userTask->delete();
+            return response()->json(null, 204);
+        }
+
+        return response()->json(['error' => 'UsersTask not found'], 404);
     }
 
     public function getUserIdByTaskId($id)
-    {
-        $result = cache()->remember(`user_tasks_`.$id, now()->addMinutes(10), function() use ($id){
-            $userTask = UsersTask::where('task_id', $id)->first();
-            if ($userTask) 
-                return response()->json(['id' => $userTask->user_id]);
-            else
-                return null;
-        });
-        return $result;
-    }
+{
+    $result = cache()->remember('usertasks_' . $id, now()->addMinutes(10), function () use ($id) {
+        $userTask = UsersTask::where('task_id', $id)->first();
+        if ($userTask) {
+            return response()->json(['id' => $userTask->user_id]);
+        } else {
+            return null;
+        }
+    });
+    return $result;
+}
+
 }

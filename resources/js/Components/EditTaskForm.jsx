@@ -6,24 +6,24 @@ import { useForm } from '@inertiajs/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ApiService from '../services/ApiService';
+import formatDate from '../services/date';
 
-export default function TaskForm({ statusId }) {
+export default function EditTaskForm({ task }) {
+
     const { data, setData, processing, errors } = useForm({
-        category: '',
-        task: '',
-        start_date: new Date().toISOString().slice(0, 10),
-        end_date: null,
-        status_id: statusId,
+        category: task.category,
+        task: task.task,
+        start_date: formatDate(new Date(task.start_date)),
+        end_date: formatDate(new Date(task.end_date)),
     });
 
     const submit = async (e) => {
         e.preventDefault();
 
-        setData('end_date', new Date(data.end_date).toISOString().slice(0, 10));
         try {
-            await ApiService.post('/tasks', data);
+            await ApiService.put(`/tasks/${task.id}`, data);
         } catch (error) {
-            console.error('Ошибка при отправке данных:', error);
+            console.error('Ошибка при обновлении данных:', error);
         }
     };
 
@@ -57,11 +57,22 @@ export default function TaskForm({ statusId }) {
             </div>
 
             <div className="mb-6">
+                <InputLabel htmlFor="start_date" value="Start date" />
+                <DatePicker
+                    id="start_date"
+                    selected={data.start_date ? new Date(data.start_date) : null}
+                    onChange={(date) => setData('start_date', formatDate(date))}
+                    className="mt-1 block w-full px-4 py-2 text-lg border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                <InputError message={errors.start_date} className="mt-2 text-red-500 text-sm" />
+            </div>
+
+            <div className="mb-6">
                 <InputLabel htmlFor="end_date" value="End date" />
                 <DatePicker
                     id="end_date"
                     selected={data.end_date ? new Date(data.end_date) : null}
-                    onChange={(date) => setData('end_date', date ? date.toISOString() : null)}
+                    onChange={(date) => setData('end_date', formatDate(date))}
                     className="mt-1 block w-full px-4 py-2 text-lg border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 />
                 <InputError message={errors.end_date} className="mt-2 text-red-500 text-sm" />
@@ -69,7 +80,7 @@ export default function TaskForm({ statusId }) {
 
             <div className="flex items-center justify-end">
                 <PrimaryButton className="ms-4" disabled={processing}>
-                    Submit
+                    Update
                 </PrimaryButton>
             </div>
         </form>

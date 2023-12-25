@@ -6,17 +6,17 @@ const KanbanLayout = ({ children }) => {
     const user = usePage().props.auth.user;
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col">
             <header className="bg-white border-b border-gray-200">
                 <nav className="flex items-center flex-shrink-0 w-full h-16 px-10 bg-white bg-opacity-75">
-                    <svg className="w-8 h-8 text-indigo-600 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                    </svg>
-                    {/*<input className="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring" type="search" placeholder="Search for anything…" />
-               */}
-                    <div className="px-10 mt-0">
-                        <h1 className="text-2xl font-bold">Team Project Board</h1>
-                    </div>
+                    <Link href="/" className="flex flex-row sm:justify-center items-center pt-6 sm:pt-0">
+                        <svg className="w-10 h-10 text-indigo-600 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                        <div className="px-10 mt-0">
+                            <h1 className="text-2xl font-bold">Team Project Board</h1>
+                        </div>
+                    </Link>
                     {user ? (
                         <div className="flex items-center absolute right-0">
                             {user.role == 'admin' && (
@@ -24,7 +24,7 @@ const KanbanLayout = ({ children }) => {
                                     Users
                                 </Link>
                             )}
-                            <div className="relative mr-6">
+                            <div className="relative">
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
                                     <div className="ms-3 relative">
                                         <Dropdown>

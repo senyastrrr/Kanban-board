@@ -101,10 +101,10 @@ export default function ProjectBoard() {
     };
 
     return (
-        <div className="flex flex-col min-w-screen min-h-screen text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+        <div className="flex flex-col h-screen text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="flex flex-grow px-10 mt-4 space-x-6">
+                <div className="flex flex-grow mx-2 mt-4 space-x-6">
                     {Object.values(columns).map((column) => {
                         const updatedTasks = columns[column.id].taskIds.map((taskId) => {
                             return tasks.find((task) => task.id === parseInt(taskId));
