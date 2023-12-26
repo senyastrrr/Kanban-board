@@ -44,4 +44,10 @@ class TaskController extends Controller
         $tasks = Task::where('status_id', $statusId)->get();
         return response()->json($tasks);
     }
+
+    public function getTasksByUserId($userId)
+    {
+        $tasks = Task::where('user_id', $userId)->get();
+        return response()->json($tasks);
+    }
 }

@@ -12,7 +12,6 @@ class StatusController extends Controller
     public function index()
     {
         $result = cache()->remember('statuses', now()->addMinutes(10), function(){
-            echo 'asd';
             return response()->json(Status::all());
         });
         return $result;

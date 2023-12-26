@@ -17,3 +17,4 @@ Route::apiResource('tasks', TaskController::class);
 Route::apiResource('users', UserController::class);
 Route::get('/statuses/get-id-by-name/{name}', [StatusController::class, 'getStatusIdByName']);
 Route::get('/tasks/get-by-status/{statusId}', [TaskController::class, 'getTasksByStatusId']);
+Route::get('/tasks/get-by-user/{userId}', [TaskController::class, 'getTasksByUserId']);

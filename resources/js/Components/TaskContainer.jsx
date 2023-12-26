@@ -10,7 +10,7 @@ export default function TaskContainer({ statusId, status, tasks, users }) {
     const [editForm, setEditForm] = useState(false);
     const [createForm, setCreateForm] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    
+
     const user = usePage().props.auth.user;
 
     return (
@@ -48,9 +48,9 @@ export default function TaskContainer({ statusId, status, tasks, users }) {
                             </svg>
                         </button>
                         {editForm ? (
-                            <EditTaskForm task={selectedTask} />
+                            <EditTaskForm task={selectedTask} setEditForm={setEditForm} users={users}/>
                         ) : (
-                            <CreateTaskForm statusId={statusId} />
+                            <CreateTaskForm statusId={statusId} setCreateForm={setCreateForm}/>
                         )}
                     </div>
                 </div>
@@ -64,7 +64,6 @@ export default function TaskContainer({ statusId, status, tasks, users }) {
                     >
                         {tasks.map((task, index) => {
                             let isOwner = user.role === 'admin' || user.id === task.user_id;
-                            console.log(users);
                             return (
                                 <Draggable
                                     draggableId={`${task.id}`}

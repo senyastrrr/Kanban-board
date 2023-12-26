@@ -8,24 +8,23 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ApiService from '../services/ApiService';
 import formatDate from '../services/date';
 
-export default function CreateTaskForm({ statusId }) {
+export default function CreateTaskForm({ statusId, setCreateForm }) {
     const { data, setData, processing, errors } = useForm({
         category: '',
         task: '',
-        start_date: formatDate(new Date().toISOString().slice(0, 10)),
+        start_date: formatDate(new Date().toISOString()),
         end_date: null,
         status_id: statusId,
+        user_id: usePage().props.auth.user.id,
     });
-
-    let user = usePage().props.auth.user;
 
     const submit = async (e) => {
         e.preventDefault();
 
         try {
-            let taskResponse = await ApiService.post('/tasks', data);
-            let taskId = taskResponse.id;
-            await ApiService.post('/users_tasks', { user_id: user.id, task_id: taskId });
+            await ApiService.post('/tasks', data);
+            window.location.reload();
+            setCreateForm(false);
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
         }
@@ -34,6 +33,7 @@ export default function CreateTaskForm({ statusId }) {
     return (
         <form onSubmit={submit} className="max-w-md mx-auto">
             <div className="mb-6">
+                <h3 className="text-2xl font-semibold mb-6 mt-3 text-gray-700 text-center">Create task</h3>
                 <InputLabel htmlFor="category" value="Category" />
                 <TextInput
                     id="category"
@@ -49,14 +49,13 @@ export default function CreateTaskForm({ statusId }) {
 
             <div className="mb-6">
                 <InputLabel htmlFor="task" value="Task" />
-                <TextInput
+                <textarea
                     id="task"
-                    type="task"
                     name="task"
                     value={data.task}
-                    className="mt-1 block w-full px-4 py-2 text-lg border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full h-32 px-4 py-2 text-lg border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 resize-none"
                     onChange={(e) => setData('task', e.target.value)}
-                />
+                ></textarea>
                 <InputError message={errors.task} className="mt-2 text-red-500 text-sm" />
             </div>
 
